@@ -41,13 +41,10 @@ public class HomeActivity extends AppCompatActivity {
 
     //Se necesitan globales, mas accesible
     private RecyclerView recyclerView;
-    private AlertDialog.Builder builder;
+
 
     //Base de datos
     private DatabaseReference reference;
-    private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
-    private String onlineUserID;
 
     private ProgressDialog loader;
 
@@ -77,8 +74,8 @@ public class HomeActivity extends AppCompatActivity {
 
         loader = new ProgressDialog(this);
 
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
-        onlineUserID = mUser.getUid();
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        String onlineUserID = mUser.getUid();
         reference = FirebaseDatabase.getInstance().getReference().child("Tareas").child(onlineUserID);
 
         floatingActionButton = (FloatingActionButton)findViewById(R.id.fab);
@@ -210,6 +207,7 @@ public class HomeActivity extends AppCompatActivity {
         }
         public void setDate(String date){
             TextView dateTextView = mView.findViewById(R.id.dateTv);
+            dateTextView.setText(date);
         }
     }
 
@@ -220,6 +218,7 @@ public class HomeActivity extends AppCompatActivity {
         myDialog.setView(view);
 
         AlertDialog dialog = myDialog.create();
+        AlertDialog.Builder builder;
 
         EditText mTask = view.findViewById(R.id.mEditTextTask);
         EditText mDescription = view.findViewById(R.id.mEditTextDescription);
@@ -298,14 +297,13 @@ public class HomeActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            //de esta forma se cierra sesion de la aplicacion.
-            case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                Intent intent  = new Intent(HomeActivity.this, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+        //de esta forma se cierra sesion de la aplicacion.
+        if (item.getItemId() == R.id.logout) {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

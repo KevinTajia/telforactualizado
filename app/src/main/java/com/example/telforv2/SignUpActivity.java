@@ -2,7 +2,6 @@ package com.example.telforv2;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -26,7 +25,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
 
-    private Uri mainUri = null;
+
     private FirebaseAuth mAuth;
 
     public static final String PREFERENCES = "prefKey";
@@ -36,7 +35,10 @@ public class SignUpActivity extends AppCompatActivity {
     public static final String Matricula = "matriculaKey";
 
     SharedPreferences sharedPreferences;
-    String name, password, email, matricula;
+    String name;
+    String password;
+    String email;
+    String matricula;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,10 @@ public class SignUpActivity extends AppCompatActivity {
         });
         //variables utilizadas para los campos del usuario, email,
         // matricula, password y el boton de registo del usuario
-        EditText username, user_email, user_matricula, user_password;
+        EditText username;
+        EditText user_email;
+        EditText user_matricula;
+        EditText user_password;
         Button registro_btn;
 
         //De esta manera se buscan los campos

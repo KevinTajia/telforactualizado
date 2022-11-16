@@ -9,11 +9,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class Test1 extends AppCompatActivity {
 
-    private FloatingActionButton floatingActionButton;
-    RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test1);
+        FloatingActionButton floatingActionButton;
+        RecyclerView recyclerView;
     }
 }

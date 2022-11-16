@@ -2,7 +2,10 @@ package com.example.telforv2;
 
 public class Model {
 
-    private String task, description, id, date;
+    private String task;
+    private String description;
+    private String id;
+    private String date;
 
     public Model() {
     }

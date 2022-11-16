@@ -29,7 +29,6 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
 
     public static final String PREFERENCES = "prefKey";
 
@@ -45,10 +44,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        FirebaseAuth.AuthStateListener authStateListener;
         sharedPreferences = getApplicationContext().getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         reference = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -75,7 +76,8 @@ public class LoginActivity extends AppCompatActivity {
         //edit text del usuario y la contrase;a
         Button loginBtn;
         TextView forgetPassword;
-        EditText userEmail, userPassword;
+        EditText userEmail;
+        EditText userPassword;
 
         userEmail = findViewById(R.id.user_email);
         userPassword = findViewById(R.id.user_password);
