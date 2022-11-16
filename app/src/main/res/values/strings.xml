@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">telforv2</string>
+    <string name="tasks">Tareas por hacer</string>
+    <string name="todo">TODO</string>
+</resources>

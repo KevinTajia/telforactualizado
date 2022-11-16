@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "216530220851",
+    "project_id": "pfinalinge",
+    "storage_bucket": "pfinalinge.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216530220851:android:76b88bdc6a2d6379cfb046",
+        "android_client_info": {
+          "package_name": "com.example.telforv2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "216530220851-tcplnh5lr3gd1nlb2cnqc96pk4o4dckt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHFaP7zzn4t91uiXaTI_1E8NgeOb1P1bw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "216530220851-tcplnh5lr3gd1nlb2cnqc96pk4o4dckt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
