@@ -128,7 +128,7 @@ public class HomeActivity extends AppCompatActivity {
     public void runTimer(){
         TextView tiempo = findViewById(R.id.tiempo);
         Handler handler = new Handler();
-        String mTask = tiempo.getText().toString().trim();
+
 
         handler.post(new Runnable() {
             @Override
@@ -278,7 +278,7 @@ public class HomeActivity extends AppCompatActivity {
         myDialog.setView(view);
 
         AlertDialog dialog = myDialog.create();
-        AlertDialog.Builder builder;
+
 
         EditText mTask = view.findViewById(R.id.mEditTextTask);
         EditText mDescription = view.findViewById(R.id.mEditTextDescription);
@@ -289,7 +289,7 @@ public class HomeActivity extends AppCompatActivity {
         mDescription.setSelection(description.length());
 
         Button deleteBtn = view.findViewById(R.id.btnDelete);
-        builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         Button updateBtn = view.findViewById(R.id.btnUpdate);
 
         //Boton para actualizar la tarea
