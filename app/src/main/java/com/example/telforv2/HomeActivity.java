@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -54,6 +56,9 @@ public class HomeActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
 
+    private int seconds;
+    private boolean running;
+    private boolean wasRunning;
 
 
     @Override
@@ -61,6 +66,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.home_activity);
+        runTimer();
 
         //Boton para agregar tareas
         FloatingActionButton floatingActionButton;
@@ -83,6 +89,60 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addTask();
+            }
+        });
+    }
+
+    public void onIniciar(View view){
+        running = true;
+    }
+    public void onDetener(View view){
+        running = false;
+    }
+    public void onReiniciar(View view){
+        running = false;
+        seconds = 0;
+
+    }
+    protected void onPause(){
+        super.onPause();
+        wasRunning = running;
+        running = false;
+    }
+    public void onResume(){
+        super.onResume();
+        if(wasRunning){
+            running = true;
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("seconds",seconds);
+        outState.putBoolean("running",running);
+        outState.putBoolean("wasRunning",wasRunning);
+    }
+
+    public void runTimer(){
+        TextView tiempo = findViewById(R.id.tiempo);
+        Handler handler = new Handler();
+        String mTask = tiempo.getText().toString().trim();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int hours = seconds / 3600;
+                int minutes = (seconds % 3600)/60;
+                int secs= seconds % 60;
+                String time = String.format(Locale.getDefault(),"%d:%02d:%02d",hours,minutes,secs);
+
+                tiempo.setText(time);
+                if(running){
+                    seconds++;
+                }
+                handler.postDelayed(this, 1000);
             }
         });
     }
