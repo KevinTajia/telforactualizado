@@ -1,10 +1,12 @@
-package com.example.telforv2;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.telforv2.Activites;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.telforv2.R;
 
 public class SplashActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.telforv2;
+package com.example.telforv2.Model;
 
 public class Model {
 
@@ -6,16 +6,19 @@ public class Model {
     private String description;
     private String id;
     private String date;
+    private String new_time;
 
     public Model() {
     }
 
-    public Model(String task, String description, String id, String date) {
+    public Model(String task, String description, String id, String date, String new_time) {
         this.task = task;
         this.description = description;
         this.id = id;
         this.date = date;
+        this.new_time = new_time;
     }
+
 
     public String getTask() {
         return task;
@@ -47,5 +50,13 @@ public class Model {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getNew_time() {
+        return new_time;
+    }
+
+    public void setNew_time(String new_time) {
+        this.new_time = new_time;
     }
 }

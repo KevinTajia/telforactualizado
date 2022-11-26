@@ -1,4 +1,4 @@
-package com.example.telforv2;
+package com.example.telforv2.Activites;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,14 +14,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.telforv2.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,11 +32,15 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     public static final String PREFERENCES = "prefKey";
-
+    public static final String Name = "nameKey";
+    public static final String Email = "emailKey";
+    public static final String Password = "passwordKey";
+    public static final String Matricula = "matriculaKey";
 
     SharedPreferences sharedPreferences;
-    StorageReference reference;
+    //StorageReference reference;
     FirebaseFirestore firebaseFirestore;
+    DatabaseReference reference;
 
 
 
@@ -46,9 +51,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
         sharedPreferences = getApplicationContext().getSharedPreferences(PREFERENCES, MODE_PRIVATE);
-        reference = FirebaseStorage.getInstance().getReference();
-        firebaseFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        reference = FirebaseDatabase.getInstance().getReference();
+
 
         FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -68,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.no_tienes_acceso).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this,SignUpActivity.class));
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
             }
         });
 
@@ -88,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                 String email = userEmail.getText().toString().trim();
                 String password = userPassword.getText().toString().trim();
                 //Se realiza comprobacion de que los campos no esten vacios, si lo estan
@@ -136,10 +142,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void verifyEmail() {
         //Este es el formato que se le da a los datos dentro de la bd
-        String Name = "nameKey";
-        String Email = "emailKey";
-        String Password = "passwordKey";
-        String Matricula = "matriculaKey";
         FirebaseUser user = mAuth.getCurrentUser();
 
         assert user != null;
@@ -171,7 +173,6 @@ public class LoginActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                                     finish();
-
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Datos no guardados", Toast.LENGTH_SHORT).show();
                                 }

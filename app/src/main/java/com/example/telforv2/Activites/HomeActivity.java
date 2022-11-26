@@ -1,4 +1,4 @@
-package com.example.telforv2;
+package com.example.telforv2.Activites;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -24,6 +24,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.telforv2.Model.Model;
+import com.example.telforv2.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,34 +33,45 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity {
 
 
     //Se necesitan globales, mas accesible
-    private RecyclerView recyclerView;
-
+    private RecyclerView list;
+    private RecyclerView datosEmpleado;
+    private FloatingActionButton floatingActionButton;
 
     //Base de datos
     private DatabaseReference reference;
-
     private ProgressDialog loader;
-
     private String key = "";
     private String task;
     private String description;
+    private String uid;
+ 
+    FirebaseDatabase firebaseDatabase;
 
     SharedPreferences sharedPreferences;
 
+    public static final String PREFERENCES = "prefKey";
+    public static final  String IsLogIn = "islogin";
+
     private int seconds;
     private boolean running;
-    private boolean wasRunning;
+    public boolean wasRunning;
+
+
 
 
     @Override
@@ -66,87 +79,72 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.home_activity);
-        runTimer();
+        correrTiempo();
+
+
 
         //Boton para agregar tareas
-        FloatingActionButton floatingActionButton;
 
-        recyclerView = (RecyclerView)findViewById(R.id.list);
+
+        floatingActionButton = (FloatingActionButton)findViewById(R.id.fab);
+        list = (RecyclerView)findViewById(R.id.list);
+        datosEmpleado = (RecyclerView)findViewById(R.id.datosEmpleado);
+
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        list.setHasFixedSize(true);
+        list.setLayoutManager(linearLayoutManager);
+
 
         loader = new ProgressDialog(this);
+        firebaseDatabase = firebaseDatabase.getInstance();
+        uid= Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+        sharedPreferences = getApplicationContext().getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor pref = sharedPreferences.edit();
+        pref.putBoolean(IsLogIn, true);
+        pref.commit();
 
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         String onlineUserID = mUser.getUid();
         reference = FirebaseDatabase.getInstance().getReference().child("Tareas").child(onlineUserID);
 
-        floatingActionButton = (FloatingActionButton)findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addTask();
             }
         });
-    }
-
-    public void onIniciar(View view){
-        running = true;
-    }
-    public void onDetener(View view){
-        running = false;
-    }
-    public void onReiniciar(View view){
-        running = false;
-        seconds = 0;
-
-    }
-    protected void onPause(){
-        super.onPause();
-        wasRunning = running;
-        running = false;
-    }
-    public void onResume(){
-        super.onResume();
-        if(wasRunning){
-            running = true;
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putInt("seconds",seconds);
-        outState.putBoolean("running",running);
-        outState.putBoolean("wasRunning",wasRunning);
-    }
-
-    public void runTimer(){
-        TextView tiempo = findViewById(R.id.tiempo);
-        Handler handler = new Handler();
 
 
-        handler.post(new Runnable() {
+        //Conexion a Real time Data Base
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.getReference().child("Usuarios").child(uid).child("Nombre").addValueEventListener(new ValueEventListener() {
             @Override
-            public void run() {
-                int hours = seconds / 3600;
-                int minutes = (seconds % 3600)/60;
-                int secs= seconds % 60;
-                String time = String.format(Locale.getDefault(),"%d:%02d:%02d",hours,minutes,secs);
-
-                tiempo.setText(time);
-                if(running){
-                    seconds++;
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String Nombre = snapshot.getValue(String.class);
+                //Comprobacion de usuarios, si admin es igual al nombre de registro, se ocultan varias cosas
+                if(Objects.equals(Nombre, "admin")){
+                    list.setVisibility(View.GONE);
+                    floatingActionButton.setVisibility(View.GONE);
+                    datosEmpleado.setVisibility(View.VISIBLE);
+                }else{
+                    list.setVisibility(View.VISIBLE);
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                    datosEmpleado.setVisibility(View.GONE);
                 }
-                handler.postDelayed(this, 1000);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
-    }
 
+            
+    }
 
     private void addTask() {
         //Metodo para agregar tareas
@@ -161,6 +159,7 @@ public class HomeActivity extends AppCompatActivity {
 
         final EditText task = myView.findViewById(R.id.task);
         final EditText description = myView.findViewById(R.id.description);
+        TextView tiempo = findViewById(R.id.tiempo);
         Button save = myView.findViewById(R.id.saveBtn);
         Button cancel = myView.findViewById(R.id.cancelBtn);
 
@@ -180,6 +179,7 @@ public class HomeActivity extends AppCompatActivity {
                 String mDescription = description.getText().toString().trim();
                 String id = reference.push().getKey();
                 String date = DateFormat.getDateInstance().format(new Date());
+                String mTime = tiempo.getText().toString().trim();
 
                 //Verificacion para ver si la tarea esta vacia o no
                 if (TextUtils.isEmpty(mTask)) {
@@ -194,7 +194,7 @@ public class HomeActivity extends AppCompatActivity {
                     loader.setCanceledOnTouchOutside(false);
                     loader.show();
 
-                    Model model = new Model(mTask, mDescription, id, date);
+                    Model model = new Model(mTask, mDescription, id, date, mTime);
                     reference.child(id).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -228,6 +228,8 @@ public class HomeActivity extends AppCompatActivity {
                 holder.setDate(model.getDate());
                 holder.setTask(model.getTask());
                 holder.setDescription(model.getDescription());
+                holder.setNewTime(model.getNew_time());
+
                 holder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -235,6 +237,7 @@ public class HomeActivity extends AppCompatActivity {
                         task = model.getTask();
                         description = model.getDescription();
                         updateTask();
+                        correrTiempo();
                     }
                 });
             }
@@ -246,8 +249,55 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
 
-        recyclerView.setAdapter(adapter);
+        list.setAdapter(adapter);
         adapter.startListening();
+    }
+
+    public void correrTiempo(){
+        TextView tiempo = findViewById(R.id.tiempo);
+        Handler handler = new Handler();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int hours = seconds / 3600;
+                int minutes = (seconds % 3600)/60;
+                int secs= seconds % 60;
+                String time = String.format(Locale.getDefault(),"%d:%02d:%02d",hours,minutes,secs);
+
+                tiempo.setText(time);
+                if(running){
+                    seconds+=1;
+                }
+                handler.postDelayed(this, 1000);
+            }
+        });
+    }
+
+    public void onIniciar(View view){
+        running = true;
+    }
+
+    public void onDetener(View view){
+        running = false;
+    }
+
+    public void onReiniciar(View view){
+        running = false;
+        seconds = 0;
+    }
+
+    protected void onPausa(){
+        onPausa();
+        wasRunning = running;
+        running = false;
+    }
+
+    public void onReanudar(){
+        onReanudar();
+        if(wasRunning){
+            running = true;
+        }
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
@@ -269,6 +319,10 @@ public class HomeActivity extends AppCompatActivity {
             TextView dateTextView = mView.findViewById(R.id.dateTv);
             dateTextView.setText(date);
         }
+        public void setNewTime(String time){
+            TextView timeTextView = mView.findViewById(R.id.timeTv);
+            timeTextView.setText(time);
+        }
     }
 
     private void updateTask(){
@@ -282,11 +336,14 @@ public class HomeActivity extends AppCompatActivity {
 
         EditText mTask = view.findViewById(R.id.mEditTextTask);
         EditText mDescription = view.findViewById(R.id.mEditTextDescription);
+        TextView mTime = findViewById(R.id.tiempo);
+
 
         mTask.setText(task);
         mTask.setSelection(task.length());
         mDescription.setText(description);
         mDescription.setSelection(description.length());
+
 
         Button deleteBtn = view.findViewById(R.id.btnDelete);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -299,7 +356,9 @@ public class HomeActivity extends AppCompatActivity {
                 String task = mTask.getText().toString().trim();
                 String description = mDescription.getText().toString().trim();
                 String date = DateFormat.getDateInstance().format(new Date());
-                Model model = new Model(task, description, key, date);
+                String tiempov2 = mTime.getText().toString().trim();
+
+                Model model = new Model(task, description, key, date, tiempov2);
 
                 //Comprobacion de tarea vacia
                 if(TextUtils.isEmpty(task)){

@@ -1,4 +1,4 @@
-package com.example.telforv2;
+package com.example.telforv2.Activites;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,12 +13,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.telforv2.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -27,6 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private FirebaseAuth mAuth;
+    private DatabaseReference reference;
 
     public static final String PREFERENCES = "prefKey";
     public static final String Name = "nameKey";
@@ -54,34 +61,36 @@ public class SignUpActivity extends AppCompatActivity {
         });
         //variables utilizadas para los campos del usuario, email,
         // matricula, password y el boton de registo del usuario
-        EditText username;
+        EditText user_name;
         EditText user_email;
         EditText user_matricula;
         EditText user_password;
         Button registro_btn;
 
         //De esta manera se buscan los campos
-        username = findViewById(R.id.username);
+        user_name = findViewById(R.id.name);
         user_password = findViewById(R.id.user_password);
         user_email = findViewById(R.id.user_email);
         user_matricula = findViewById(R.id.user_matricula);
         registro_btn = findViewById(R.id.registro_btn);
         mAuth = FirebaseAuth.getInstance();
+        reference = FirebaseDatabase.getInstance().getReference();
 
         //boton de registro del usuario
+
         registro_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                String name = username.getText().toString().trim();
+                String name = user_name.getText().toString().trim();
                 String password = user_password.getText().toString().trim();
-                String  email = user_email.getText().toString().trim();
+                String email = user_email.getText().toString().trim();
                 String matricula = user_matricula.getText().toString().trim();
 
                 //Se establece una condicion, si el usuario deja algun campo
                 //vacio, manda un mensaje dentro del campo.
                 if(TextUtils.isEmpty(name)){
-                    username.setError("Por favor, llene los campos");
+                    user_name.setError("Por favor, llene los campos");
                     return;
                 }
                 if(TextUtils.isEmpty(email)){
@@ -100,20 +109,31 @@ public class SignUpActivity extends AppCompatActivity {
                     //Con este if aseguramos que si los campos no estan vacios, crear el usuario.
                     if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(email)
                             && Patterns.EMAIL_ADDRESS.matcher(email).matches() && !TextUtils.isEmpty(matricula)) {
-                        createUser(email, password);
+                        createUser(name, email, matricula,password);
                     }
                 }
             }
         });
     }
 
-    private void createUser(String email, String password) {
+    private void createUser(String name, String email, String matricula, String password) {
         mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 //La informacion anterior se manda a la bd para crear el usuario. Si todo sale bien,
                 // va a mostrar un mensaje indcando que se creo el usuario exitosamente.
                 if(task.isSuccessful()){
+                    String uid = task.getResult().getUser().getUid();
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("Nombre", name);
+                    map.put("Correo", email);
+                    map.put("Matricula", matricula);
+                    map.put("Contraseña", password);
+                    map.put("uid", uid);
+
+
+                    reference.child("Usuarios").child(uid).setValue(map);
+
                     Toast.makeText(SignUpActivity.this, "Usuario creado", Toast.LENGTH_SHORT).show();
                     verifyEmail();
                 }else{
@@ -146,10 +166,12 @@ public class SignUpActivity extends AppCompatActivity {
 
                         Toast.makeText(SignUpActivity.this, "Correo electrónico enviado", Toast.LENGTH_SHORT).show();
                         FirebaseAuth.getInstance().signOut();
-                        startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
+                        startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                         finish();
 
                     }else{
+
+                        finish();
 
                     }
                 }
