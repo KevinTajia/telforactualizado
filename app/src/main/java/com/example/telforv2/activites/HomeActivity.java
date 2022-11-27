@@ -84,8 +84,6 @@ public class HomeActivity extends AppCompatActivity {
         list.setHasFixedSize(true);
         list.setLayoutManager(linearLayoutManager);
 
-        String uid;
-
         loader = new ProgressDialog(this);
         firebaseDatabase = FirebaseDatabase.getInstance();
 

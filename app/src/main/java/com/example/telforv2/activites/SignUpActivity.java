@@ -136,6 +136,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                     Toast.makeText(SignUpActivity.this, "Usuario creado", Toast.LENGTH_SHORT).show();
                     verifyEmail();
+                }if (password.length() < 6){
+                    Toast.makeText(SignUpActivity.this, "Contraseña debe ser mayor a 6 caracteres", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(SignUpActivity.this, "Falló, intentelo de nuevo", Toast.LENGTH_SHORT).show();
                 }
