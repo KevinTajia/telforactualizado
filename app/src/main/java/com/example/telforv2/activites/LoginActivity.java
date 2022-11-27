@@ -57,7 +57,6 @@ public class LoginActivity extends AppCompatActivity {
 
         sharedPreferences = getApplicationContext().getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         mAuth = FirebaseAuth.getInstance();
-        reference = FirebaseDatabase.getInstance().getReference();
         firebaseDatabase = firebaseDatabase.getInstance();
 
 
@@ -100,7 +99,6 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                 String email = userEmail.getText().toString().trim();
                 String password = userPassword.getText().toString().trim();
                 //Se realiza comprobacion de que los campos no esten vacios, si lo estan

@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.telforv2.Model.Model;
+import com.example.telforv2.model.Model;
 import com.example.telforv2.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -57,7 +57,7 @@ public class HomeActivity extends AppCompatActivity {
     private String key = "";
     private String task;
     private String description;
-    private String uid;
+
     FirebaseDatabase firebaseDatabase;
     SharedPreferences sharedPreferences;
 
@@ -76,10 +76,7 @@ public class HomeActivity extends AppCompatActivity {
 
         //Boton para agregar tareas
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-
-        TextView tiempo = findViewById(R.id.tiempo);
-
-        list = (RecyclerView)findViewById(R.id.list);
+        list = findViewById(R.id.list);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
@@ -87,9 +84,10 @@ public class HomeActivity extends AppCompatActivity {
         list.setHasFixedSize(true);
         list.setLayoutManager(linearLayoutManager);
 
+        String uid;
+
         loader = new ProgressDialog(this);
-        firebaseDatabase = firebaseDatabase.getInstance();
-        uid= Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        firebaseDatabase = FirebaseDatabase.getInstance();
 
         sharedPreferences = getApplicationContext().getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor pref = sharedPreferences.edit();
@@ -97,7 +95,8 @@ public class HomeActivity extends AppCompatActivity {
         pref.commit();
 
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-        String onlineUserID = mUser.getUid();
+        String onlineUserID = Objects.requireNonNull(mUser).getUid();
+
         reference = FirebaseDatabase.getInstance().getReference().child("Tareas").child(onlineUserID);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -325,7 +324,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
         Button deleteBtn = view.findViewById(R.id.btnDelete);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         Button updateBtn = view.findViewById(R.id.btnUpdate);
 
         //Boton para actualizar la tarea

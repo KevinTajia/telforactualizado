@@ -1,4 +1,4 @@
-package com.example.telforv2.Adapter;
+package com.example.telforv2.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

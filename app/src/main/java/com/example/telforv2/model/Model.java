@@ -1,4 +1,4 @@
-package com.example.telforv2.Model;
+package com.example.telforv2.model;
 
 public class Model {
 

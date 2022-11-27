@@ -26,7 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.telforv2.Model.Model;
+import com.example.telforv2.model.Model;
 import com.example.telforv2.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -304,7 +304,7 @@ public class AdminActivity extends AppCompatActivity {
 
 
         Button deleteBtn = view.findViewById(R.id.btnDelete);
-        Button updateBtn = view.findViewById(R.id.btnUpdate);
+            Button updateBtn = view.findViewById(R.id.btnUpdate);
 
         //Boton para actualizar la tarea
         updateBtn.setOnClickListener(new View.OnClickListener() {
