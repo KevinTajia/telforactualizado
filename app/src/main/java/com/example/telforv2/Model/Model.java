@@ -1,12 +1,17 @@
 package com.example.telforv2.Model;
 
+import com.google.firebase.database.DatabaseReference;
+
 public class Model {
 
+
+    private DatabaseReference reference;
     private String task;
     private String description;
     private String id;
     private String date;
     private String new_time;
+    private String uid;
 
     public Model() {
     }
@@ -58,5 +63,13 @@ public class Model {
 
     public void setNew_time(String new_time) {
         this.new_time = new_time;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.telforv2.Model.Model;
+import com.example.telforv2.Activites.User;
 import com.example.telforv2.R;
 
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.myViewHolder> {
 
     Context context;
 
-    ArrayList<Model> list;
+    ArrayList<User> list;
 
-    public MyAdapter(Context context, ArrayList<Model> list) {
+    public MyAdapter(Context context, ArrayList<User> list) {
         this.context = context;
         this.list = list;
     }
@@ -36,7 +36,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.myViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull myViewHolder holder, int position) {
 
-        Model model = list.get(position);
+        User model = list.get(position);
+
 
         holder.nombreEmpleado.setText(model.getId());
         holder.tituloTarea.setText(model.getTask());
@@ -53,7 +54,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.myViewHolder> {
 
     public static class myViewHolder extends RecyclerView.ViewHolder{
 
-        TextView nombreEmpleado;
+       TextView nombreEmpleado;
         TextView tituloTarea;
         TextView descripcionTarea;
         TextView fechaTarea;

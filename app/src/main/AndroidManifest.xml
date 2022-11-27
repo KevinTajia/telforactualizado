@@ -28,6 +28,9 @@
             android:name=".Activites.Userlist"
             android:exported="false" />
         <activity
+            android:name=".Activites.ActivityNewUserList"
+            android:exported="false" />
+        <activity
             android:name=".Activites.AdminActivity"
             android:exported="false" />
         <activity

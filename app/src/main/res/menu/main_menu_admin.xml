@@ -4,6 +4,11 @@
     <item
         android:id="@+id/logoutAdmin"
         android:title="Cerrar sesión">
+    </item>
+
+    <item
+        android:id="@+id/consultarDatos"
+        android:title="Consultar Datos">
 
     </item>
 </menu>
