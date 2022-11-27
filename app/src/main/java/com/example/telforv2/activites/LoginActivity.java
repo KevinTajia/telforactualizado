@@ -1,4 +1,4 @@
-package com.example.telforv2.Activites;
+package com.example.telforv2.activites;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,7 +30,7 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private String uid;
+
 
     public static final String PREFERENCES = "prefKey";
     public static final String Name = "nameKey";
@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     //StorageReference reference;
     FirebaseFirestore firebaseFirestore;
-    DatabaseReference reference;
+
 
 
 
@@ -52,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+        DatabaseReference reference;
 
         sharedPreferences = getApplicationContext().getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         mAuth = FirebaseAuth.getInstance();

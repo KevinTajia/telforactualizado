@@ -1,11 +1,9 @@
 package com.example.telforv2.Model;
 
-import com.google.firebase.database.DatabaseReference;
-
 public class Model {
 
 
-    private DatabaseReference reference;
+
     private String task;
     private String description;
     private String id;

@@ -1,4 +1,4 @@
-package com.example.telforv2.Activites;
+package com.example.telforv2.activites;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,6 +49,8 @@ public class ActivityNewUserList extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
+                lista.notify();
 
             }
         });

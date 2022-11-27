@@ -13,10 +13,10 @@
             android:name=".Test1"
             android:exported="false" />
         <activity
-            android:name=".Activites.HomeActivity"
+            android:name=".activites.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".Activites.SplashActivity"
+            android:name=".activites.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,22 +25,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activites.Userlist"
+            android:name=".activites.Userlist"
             android:exported="false" />
         <activity
-            android:name=".Activites.ActivityNewUserList"
+            android:name=".activites.ActivityNewUserList"
             android:exported="false" />
         <activity
-            android:name=".Activites.AdminActivity"
+            android:name=".activites.AdminActivity"
             android:exported="false" />
         <activity
-            android:name=".Activites.ForgetPasswordActivity"
+            android:name=".activites.ForgetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".Activites.SignUpActivity"
+            android:name=".activites.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".Activites.LoginActivity"
+            android:name=".activites.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

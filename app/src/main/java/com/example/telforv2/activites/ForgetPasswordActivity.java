@@ -1,4 +1,4 @@
-package com.example.telforv2.Activites;
+package com.example.telforv2.activites;
 
 import android.os.Bundle;
 import android.text.TextUtils;

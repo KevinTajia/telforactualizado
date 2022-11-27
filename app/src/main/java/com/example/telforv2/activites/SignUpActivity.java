@@ -1,4 +1,4 @@
-package com.example.telforv2.Activites;
+package com.example.telforv2.activites;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

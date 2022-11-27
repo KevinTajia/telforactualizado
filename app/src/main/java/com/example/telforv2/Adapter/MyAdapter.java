@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.telforv2.Activites.User;
+import com.example.telforv2.activites.User;
 import com.example.telforv2.R;
 
 import java.util.ArrayList;

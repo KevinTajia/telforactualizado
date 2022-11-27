@@ -1,4 +1,4 @@
-package com.example.telforv2.Activites;
+package com.example.telforv2.activites;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -33,15 +33,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class AdminActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
 
     //Se necesitan globales, mas accesible
@@ -103,6 +106,24 @@ public class AdminActivity extends AppCompatActivity {
                 addTask();
             }
         });
+
+        //Conexion a Real time Data Base
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.getReference().child("Usuarios").child(onlineUserID).child("Nombre").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String Nombre = snapshot.getValue(String.class);
+                //Comprobacion de usuarios, si admin es igual al nombre de registro, se manda a otra actividad.
+                if(Objects.equals(Nombre, "admin")){
+                    startActivity((new Intent(HomeActivity.this, AdminActivity.class)));
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
     private void addTask() {
         //Metodo para agregar tareas
@@ -157,11 +178,11 @@ public class AdminActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()) {
-                                Toast.makeText(AdminActivity.this, "La actividad ha sido registrada satisfactoriamente", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HomeActivity.this, "La actividad ha sido registrada satisfactoriamente", Toast.LENGTH_SHORT).show();
                                 loader.dismiss();
                             } else {
                                 String error = task.getException().toString();
-                                Toast.makeText(AdminActivity.this, "Algo salió mal: " + error, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HomeActivity.this, "Algo salió mal: " + error, Toast.LENGTH_SHORT).show();
                                 loader.dismiss();
                             }
                         }
@@ -180,9 +201,9 @@ public class AdminActivity extends AppCompatActivity {
         FirebaseRecyclerOptions<Model> options = new FirebaseRecyclerOptions.Builder<Model>()
                 .setQuery(reference, Model.class)
                 .build();
-        FirebaseRecyclerAdapter<Model, HomeActivity.MyViewHolder> adapter = new FirebaseRecyclerAdapter<Model, HomeActivity.MyViewHolder>(options) {
+        FirebaseRecyclerAdapter<Model, MyViewHolder> adapter = new FirebaseRecyclerAdapter<Model, MyViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull HomeActivity.MyViewHolder holder, @SuppressLint("RecyclerView") int position, @NonNull Model model) {
+            protected void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position, @NonNull Model model) {
                 holder.setDate(model.getDate());
                 holder.setTask(model.getTask());
                 holder.setDescription(model.getDescription());
@@ -195,15 +216,15 @@ public class AdminActivity extends AppCompatActivity {
                         task = model.getTask();
                         description = model.getDescription();
                         updateTask();
-
+                        
                     }
                 });
             }
             @NonNull
             @Override
-            public HomeActivity.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.retrived_layout,parent,false);
-                return new HomeActivity.MyViewHolder(view);
+                return new MyViewHolder(view);
             }
         };
 
@@ -332,10 +353,10 @@ public class AdminActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             //Si todo sale bien, se muestra un mensaje exitoso
                             if (task.isSuccessful()) {
-                                Toast.makeText(AdminActivity.this, "Los datos se han actualizado correctamente", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HomeActivity.this, "Los datos se han actualizado correctamente", Toast.LENGTH_SHORT).show();
                             } else {
                                 String err = task.getException().toString();
-                                Toast.makeText(AdminActivity.this, "Los datos no se han actualizado correctamente" + err, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HomeActivity.this, "Los datos no se han actualizado correctamente" + err, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -353,10 +374,10 @@ public class AdminActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(AdminActivity.this, "Tarea borrada correctamente", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HomeActivity.this, "Tarea borrada correctamente", Toast.LENGTH_SHORT).show();
                         }else{
                             String err = task.getException().toString();
-                            Toast.makeText(AdminActivity.this, "Tarea no se ha borrado correctamente" + err, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HomeActivity.this, "Tarea no se ha borrado correctamente" + err, Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -368,28 +389,21 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu_admin,menu);
-        return true;
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //de esta forma se cierra sesion de la aplicacion.
-
-        if(item.getItemId() == R.id.consultarDatos){
-            Intent intent = new Intent(AdminActivity.this,ActivityNewUserList.class);
-            startActivity(intent);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        }
-        if (item.getItemId() == R.id.logoutAdmin) {
+        if (item.getItemId() == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(AdminActivity.this, LoginActivity.class);
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
