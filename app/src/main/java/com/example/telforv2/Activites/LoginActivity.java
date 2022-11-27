@@ -30,6 +30,7 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private String uid;
 
     public static final String PREFERENCES = "prefKey";
     public static final String Name = "nameKey";
@@ -38,9 +39,11 @@ public class LoginActivity extends AppCompatActivity {
     public static final String Matricula = "matriculaKey";
 
     SharedPreferences sharedPreferences;
+    FirebaseDatabase firebaseDatabase;
     //StorageReference reference;
     FirebaseFirestore firebaseFirestore;
     DatabaseReference reference;
+
 
 
 
@@ -53,6 +56,8 @@ public class LoginActivity extends AppCompatActivity {
         sharedPreferences = getApplicationContext().getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         mAuth = FirebaseAuth.getInstance();
         reference = FirebaseDatabase.getInstance().getReference();
+        firebaseDatabase = firebaseDatabase.getInstance();
+
 
 
         FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
@@ -109,10 +114,10 @@ public class LoginActivity extends AppCompatActivity {
                     //Primero se realiza una verificacion a la bd para ver si el usuario existe.
                     // Si el usuario existe dentro de la bd, entrara a la nueva actividad e iniciara sesion, ademas mostrara un mensaje.
                     //Si no, mostrara un mensaje de usuario no encontrado.
+
                     mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-
                             if (task.isSuccessful()) {
                                 Toast.makeText(LoginActivity.this, "!Bienvenido!", Toast.LENGTH_SHORT).show();
                                 startActivity((new Intent(LoginActivity.this, HomeActivity.class)));

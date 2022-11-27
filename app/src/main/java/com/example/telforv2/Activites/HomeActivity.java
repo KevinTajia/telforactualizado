@@ -48,9 +48,15 @@ public class HomeActivity extends AppCompatActivity {
 
 
     //Se necesitan globales, mas accesible
+
     private RecyclerView list;
-    private RecyclerView datosEmpleado;
+    private TextView Tiempo;
+    //private Button mostrarDatos;
+    //private TextView info;
     private FloatingActionButton floatingActionButton;
+    private FloatingActionButton btnIniciarCronometro;
+    private FloatingActionButton btnReiniciarCronometro;
+    private FloatingActionButton btnDetenerCronometro;
 
     //Base de datos
     private DatabaseReference reference;
@@ -61,7 +67,6 @@ public class HomeActivity extends AppCompatActivity {
     private String uid;
  
     FirebaseDatabase firebaseDatabase;
-
     SharedPreferences sharedPreferences;
 
     public static final String PREFERENCES = "prefKey";
@@ -84,11 +89,16 @@ public class HomeActivity extends AppCompatActivity {
 
 
         //Boton para agregar tareas
-
-
         floatingActionButton = (FloatingActionButton)findViewById(R.id.fab);
+        btnIniciarCronometro = findViewById(R.id.btnIniciar);
+        btnDetenerCronometro = findViewById(R.id.btnDetener);
+        btnReiniciarCronometro = findViewById(R.id.btnReiniciar);
+        Tiempo = findViewById(R.id.tiempo);
+        //mostrarDatos = findViewById(R.id.mostrarDatos);
+       //info = findViewById(R.id.info);
+
+
         list = (RecyclerView)findViewById(R.id.list);
-        datosEmpleado = (RecyclerView)findViewById(R.id.datosEmpleado);
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -121,21 +131,17 @@ public class HomeActivity extends AppCompatActivity {
 
         //Conexion a Real time Data Base
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabase.getReference().child("Usuarios").child(uid).child("Nombre").addValueEventListener(new ValueEventListener() {
+        firebaseDatabase.getReference().child("Usuarios").child(onlineUserID).child("Nombre").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String Nombre = snapshot.getValue(String.class);
                 //Comprobacion de usuarios, si admin es igual al nombre de registro, se ocultan varias cosas
                 if(Objects.equals(Nombre, "admin")){
-                    list.setVisibility(View.GONE);
-                    floatingActionButton.setVisibility(View.GONE);
-                    datosEmpleado.setVisibility(View.VISIBLE);
-                }else{
-                    list.setVisibility(View.VISIBLE);
-                    floatingActionButton.setVisibility(View.VISIBLE);
-                    datosEmpleado.setVisibility(View.GONE);
+                    startActivity((new Intent(HomeActivity.this, AdminActivity.class)));
                 }
             }
+
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -144,6 +150,10 @@ public class HomeActivity extends AppCompatActivity {
         });
 
             
+    }
+
+    private void datosDeEmpleado(){
+
     }
 
     private void addTask() {
@@ -237,7 +247,7 @@ public class HomeActivity extends AppCompatActivity {
                         task = model.getTask();
                         description = model.getDescription();
                         updateTask();
-                        correrTiempo();
+                        
                     }
                 });
             }
